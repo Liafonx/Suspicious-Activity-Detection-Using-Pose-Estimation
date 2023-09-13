@@ -1,5 +1,7 @@
 #include <ATen/ATen.h>
-#include <THC/THCAtomics.cuh>
+// #include <THC/THCAtomics.cuh>
+#include <ATen/ceil_div.h>
+#include <ATen/cuda/ThrustAllocator.h>
 
 #define CUDA_1D_KERNEL_LOOP(i, n)                            \
   for (int i = blockIdx.x * blockDim.x + threadIdx.x; i < n; \
