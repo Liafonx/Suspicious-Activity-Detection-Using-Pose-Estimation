@@ -1,4 +1,6 @@
-#include <THC/THC.h>
+//#include <THC/THC.h>
+#include <ATen/cuda/CUDAContext.h>
+#include <ATen/cuda/CUDAEvent.h>
 #include <math.h>
 #include "cuda/psroi_pooling_kernel.h"
 
@@ -26,7 +28,8 @@ int psroi_pooling_forward_cuda(int pooled_height, int pooled_width, float spatia
 	int data_width = THCudaTensor_size(state, features, 3);
 	int num_channels = THCudaTensor_size(state, features, 1);
 
-	cudaStream_t stream = THCState_getCurrentStream(state);
+//	cudaStream_t stream = THCState_getCurrentStream(state);
+    cudaStream_t stream = at::cuda::getCurrentCUDAStream();
 
 	// call the gpu kernel for psroi_pooling
 	PSROIPoolForwardLauncher(data_in, spatial_scale, num_rois, data_height, data_width, num_channels, pooled_height, pooled_width,rois_in, group_size, 
@@ -61,7 +64,8 @@ THCudaTensor* top_grad, THCudaTensor* rois, THCudaTensor* bottom_grad, THCudaInt
     	// Number of channels
     	int num_channels = THCudaTensor_size(state, bottom_grad, 1);
 
-    	cudaStream_t stream = THCState_getCurrentStream(state);
+//    	cudaStream_t stream = THCState_getCurrentStream(state);
+        cudaStream_t stream = at::cuda::getCurrentCUDAStream();
 
     	PSROIPoolBackwardLauncher(top_grad_flat, mappingchannel_flat, batch_size, num_rois, spatial_scale, num_channels, data_height, data_width, pooled_width,	      pooled_height, output_dim, bottom_grad_flat, rois_flat, stream);
         return 1;
