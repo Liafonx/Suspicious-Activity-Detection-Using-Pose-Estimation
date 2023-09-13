@@ -89,7 +89,7 @@ at::Tensor nms_cuda(const at::Tensor boxes, float nms_overlap_thresh) {
   //                      boxes_num * col_blocks * sizeof(unsigned long long)));
 
 //   mask_dev = (unsigned long long*) THCudaMalloc(state, boxes_num * col_blocks * sizeof(unsigned long long));
-  mask_dev = (unsigned long long*) c10::cuda::CUDACachingAllocator::raw_alloc(boxes_num * col_blocks * sizeof(unsigned long long))
+  mask_dev = (unsigned long long*) c10::cuda::CUDACachingAllocator::raw_alloc(boxes_num * col_blocks * sizeof(unsigned long long));
   dim3 blocks(at::ceil_div(boxes_num, threadsPerBlock),
               at::ceil_div(boxes_num, threadsPerBlock));
   dim3 threads(threadsPerBlock);
@@ -125,7 +125,7 @@ at::Tensor nms_cuda(const at::Tensor boxes, float nms_overlap_thresh) {
   }
 
 //   THCudaFree(state, mask_dev);
-  c10::cuda::CUDACachingAllocator::raw_delete(mask_dev)
+  c10::cuda::CUDACachingAllocator::raw_delete(mask_dev);
   // TODO improve this part
   return std::get<0>(order_t.index({
                        keep.narrow(/*dim=*/0, /*start=*/0, /*length=*/num_to_keep).to(
