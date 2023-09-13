@@ -1306,7 +1306,7 @@ static CYTHON_INLINE Py_ssize_t __Pyx_PyIndex_AsSsize_t(PyObject*);
 static CYTHON_INLINE PyObject * __Pyx_PyInt_FromSize_t(size_t);
 static CYTHON_INLINE Py_hash_t __Pyx_PyIndex_AsHash_t(PyObject*);
 #if CYTHON_ASSUME_SAFE_MACROS
-#define __pyx_PyFloat_AsDouble(x) (PyFloTORCH_CHECKExact(x) ? PyFloat_AS_DOUBLE(x) : PyFloat_AsDouble(x))
+#define __pyx_PyFloat_AsDouble(x) (PyFloat_CheckExact(x) ? PyFloat_AS_DOUBLE(x) : PyFloat_AsDouble(x))
 #else
 #define __pyx_PyFloat_AsDouble(x) PyFloat_AsDouble(x)
 #endif
@@ -9095,7 +9095,7 @@ static PyObject* __Pyx_PyInt_AddObjC(PyObject *op1, PyObject *op2, long intval, 
         
     }
     #endif
-    if (PyFloTORCH_CHECKExact(op1)) {
+    if (PyFloat_CheckExact(op1)) {
         const long b = intval;
 #if CYTHON_COMPILING_IN_LIMITED_API
         double a = __pyx_PyFloat_AsDouble(op1);
